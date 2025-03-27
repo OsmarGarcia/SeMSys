@@ -351,6 +351,7 @@ Public Class frmManutencaoOP
                             FROM PCOPC A,PCPRODUT B
                             WHERE A.CODPRODMASTER = B.CODPROD
                             AND A.POSICAO = 'L'
+                            AND NVL(A.QTPRODUZIDA, 0) <= NVL(A.QTPRODUZIR, 0)
                             AND A.CODFILIAL = " & My.Settings.CodFilialProducao &
                             "AND DTPREVINICIO BETWEEN TO_DATE(:DTINICIO,'DD/MM/YYYY') AND TO_DATE(:DTFIM,'DD/MM/YYYY')
                             ORDER BY A.NUMOP"
@@ -509,7 +510,7 @@ Public Class frmManutencaoOP
                     cmd.ExecuteNonQuery()
 
 
-                    cmd.CommandText = "UPDATE PCOPI SET RESERVALIBERADA = 'S' WHERE NUMOP = " & numop
+                    cmd.CommandText = "UPDATE PCOPI SET RESERVALIBERADA = 'N' WHERE NUMOP = " & numop
                     cmd.ExecuteNonQuery()
 
 

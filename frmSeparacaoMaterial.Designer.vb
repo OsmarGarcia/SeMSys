@@ -34,11 +34,11 @@ Partial Class frmSeparacaoMaterial
         Me.Label3 = New System.Windows.Forms.Label()
         Me.txtdescricao = New System.Windows.Forms.TextBox()
         Me.Label4 = New System.Windows.Forms.Label()
-        Me.DataGridView2 = New System.Windows.Forms.DataGridView()
+        Me.dgvApontamentos = New System.Windows.Forms.DataGridView()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label6 = New System.Windows.Forms.Label()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.DataGridView2, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvApontamentos, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'txtNumOP
@@ -81,7 +81,7 @@ Partial Class frmSeparacaoMaterial
         Me.DataGridView1.Name = "DataGridView1"
         Me.DataGridView1.RowHeadersWidth = 51
         Me.DataGridView1.RowTemplate.Height = 29
-        Me.DataGridView1.Size = New System.Drawing.Size(1090, 272)
+        Me.DataGridView1.Size = New System.Drawing.Size(1090, 220)
         Me.DataGridView1.TabIndex = 3
         '
         'txtDivisor
@@ -149,19 +149,20 @@ Partial Class frmSeparacaoMaterial
         Me.Label4.TabIndex = 1
         Me.Label4.Text = "Produto"
         '
-        'DataGridView2
+        'dgvApontamentos
         '
-        Me.DataGridView2.AllowUserToAddRows = False
-        Me.DataGridView2.AllowUserToDeleteRows = False
-        Me.DataGridView2.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
-        Me.DataGridView2.BackgroundColor = System.Drawing.Color.White
-        Me.DataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridView2.Location = New System.Drawing.Point(23, 435)
-        Me.DataGridView2.Name = "DataGridView2"
-        Me.DataGridView2.RowHeadersWidth = 51
-        Me.DataGridView2.RowTemplate.Height = 29
-        Me.DataGridView2.Size = New System.Drawing.Size(1090, 229)
-        Me.DataGridView2.TabIndex = 5
+        Me.dgvApontamentos.AllowUserToAddRows = False
+        Me.dgvApontamentos.AllowUserToDeleteRows = False
+        Me.dgvApontamentos.AllowUserToOrderColumns = True
+        Me.dgvApontamentos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
+        Me.dgvApontamentos.BackgroundColor = System.Drawing.Color.White
+        Me.dgvApontamentos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvApontamentos.Location = New System.Drawing.Point(23, 387)
+        Me.dgvApontamentos.Name = "dgvApontamentos"
+        Me.dgvApontamentos.RowHeadersWidth = 51
+        Me.dgvApontamentos.RowTemplate.Height = 29
+        Me.dgvApontamentos.Size = New System.Drawing.Size(1090, 466)
+        Me.dgvApontamentos.TabIndex = 5
         '
         'Label5
         '
@@ -175,7 +176,7 @@ Partial Class frmSeparacaoMaterial
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(23, 412)
+        Me.Label6.Location = New System.Drawing.Point(23, 364)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(151, 20)
         Me.Label6.TabIndex = 7
@@ -186,10 +187,10 @@ Partial Class frmSeparacaoMaterial
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.SlateGray
-        Me.ClientSize = New System.Drawing.Size(1136, 676)
+        Me.ClientSize = New System.Drawing.Size(1136, 953)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label5)
-        Me.Controls.Add(Me.DataGridView2)
+        Me.Controls.Add(Me.dgvApontamentos)
         Me.Controls.Add(Me.btnPesquisar)
         Me.Controls.Add(Me.DataGridView1)
         Me.Controls.Add(Me.btnGerarSeparacao)
@@ -207,7 +208,7 @@ Partial Class frmSeparacaoMaterial
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Separação de Material"
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.DataGridView2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvApontamentos, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -224,7 +225,7 @@ Partial Class frmSeparacaoMaterial
     Friend WithEvents Label3 As Label
     Friend WithEvents txtdescricao As TextBox
     Friend WithEvents Label4 As Label
-    Friend WithEvents DataGridView2 As DataGridView
+    Friend WithEvents dgvApontamentos As DataGridView
     Friend WithEvents Label5 As Label
     Friend WithEvents Label6 As Label
 End Class

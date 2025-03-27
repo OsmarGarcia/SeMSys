@@ -155,6 +155,44 @@ Public Class frmSeparacaoMaterial
         End Try
     End Function
 
+    Private Function PesquisarApontamentos(numop)
+
+        Dim dt As New DataTable
+
+        sql = "SELECT
+                DTMOV,
+                NVL(NUMSEQ,0) SEQ_APONTAMENTO,
+                CODPROD,
+                DESCRICAO,
+                QT,
+                CODFILIAL,
+                CODOPER,
+                NUMTRANSVENDA,
+                (SELECT MATRICULA || ' - ' || NOME FROM PCEMPR WHERE MATRICULA = PCMOV.CODUSUR) AS FUNCIONARIO
+                FROM PCMOV WHERE NUMOP = " & numop & "
+                ORDER BY NUMTRANSVENDA"
+
+        Try
+
+
+            Using cmd As New OracleCommand(sql, conexao)
+
+                cmd.CommandType = CommandType.Text
+
+                Using dr As OracleDataReader = cmd.ExecuteReader()
+                    dt.Clear()
+                    dt.Load(dr)
+                End Using
+            End Using
+
+            Return dt
+        Catch ex As Exception
+            MessageBox.Show("Erro ao pesquisar apontamentos da OP.")
+            Return Nothing
+        End Try
+
+    End Function
+
     Private Sub txtNumOP_LostFocus(sender As Object, e As EventArgs) Handles txtNumOP.LostFocus
 
 
@@ -162,8 +200,11 @@ Public Class frmSeparacaoMaterial
 
 
         Dim dt As New DataTable
+        Dim dtlancamentos As New DataTable
 
         dt = PesquisarCabecalhoOP(Convert.ToDecimal(txtNumOP.Text))
+
+
 
         If dt.Rows(0)("POSICAO").ToString() <> "P" Then
             MessageBox.Show("Ordem de producao inválida.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -177,6 +218,10 @@ Public Class frmSeparacaoMaterial
 
 
         DataGridView1.DataSource = PesquisarItensOP(txtNumOP.Text)
+
+        If dtlancamentos IsNot Nothing Then
+            dgvApontamentos.DataSource = PesquisarApontamentos(Convert.ToDecimal(txtNumOP.Text))
+        End If
 
 
     End Sub
@@ -195,6 +240,7 @@ Public Class frmSeparacaoMaterial
         Dim SQL As String
         Dim numtransvenda As Integer
         Dim numtransitem As Integer
+        Dim NUMSEQ As Integer
 
 
         Dim Oratransaction As OracleTransaction = conexao.BeginTransaction()
@@ -356,17 +402,34 @@ Public Class frmSeparacaoMaterial
 
             End Using
 
+            SQL = "SELECT MAX(NVL(NUMSEQ,1))+1 AS NUMSEQ FROM PCMOV WHERE NUMOP = " & numop
+            Using cmd As New OracleCommand(SQL, conexao)
+
+                cmd.CommandType = CommandType.Text
+
+                Dim result As Object = cmd.ExecuteScalar()
+
+                If result IsNot DBNull.Value AndAlso result IsNot Nothing Then
+                    NUMSEQ = Convert.ToInt32(result)
+                Else
+                    NUMSEQ = 1
+                End If
+
+
+
+            End Using
+
 
 
             SQL = "SELECT 
                             TO_CHAR(A.CODPROD) AS CODPROD,
                             B.DESCRICAO,
-                            ROUND(A.QTNECESSIDADE,(SELECT NVL(NUMCASASDECESTOQUE,1) FROM PCCONSUM)) AS QTNECESSIDADE,
-                            ROUND(C.CUSTOREAL,(SELECT NVL(NUMCASASDECESTOQUE,1) FROM PCCONSUM)) AS CUSTOREAL,
-                            ROUND(C.CUSTOFIN,(SELECT NVL(NUMCASASDECESTOQUE,1) FROM PCCONSUM)) AS CUSTOFIN,
-                            ROUND(C.CUSTOCONT,(SELECT NVL(NUMCASASDECESTOQUE,1) FROM PCCONSUM)) AS CUSTOCONT,
-                            ROUND(C.VALORULTENT,(SELECT NVL(NUMCASASDECESTOQUE,1) FROM PCCONSUM)) AS VALORULTENT,
-                            ROUND(C.CUSTOULTENT,(SELECT NVL(NUMCASASDECESTOQUE,1) FROM PCCONSUM)) AS CUSTOULTENT,
+                            ROUND(NVL(A.QTNECESSIDADE,0),(SELECT NVL(NUMCASASDECESTOQUE,1) FROM PCCONSUM)) AS QTNECESSIDADE,
+                            ROUND(NVL(C.CUSTOREAL,0),(SELECT NVL(NUMCASASDECESTOQUE,1) FROM PCCONSUM)) AS CUSTOREAL,
+                            ROUND(NVL(C.CUSTOFIN,0),(SELECT NVL(NUMCASASDECESTOQUE,1) FROM PCCONSUM)) AS CUSTOFIN,
+                            ROUND(NVL(C.CUSTOCONT,0),(SELECT NVL(NUMCASASDECESTOQUE,1) FROM PCCONSUM)) AS CUSTOCONT,
+                            ROUND(NVL(C.VALORULTENT,0),(SELECT NVL(NUMCASASDECESTOQUE,1) FROM PCCONSUM)) AS VALORULTENT,
+                            ROUND(NVL(C.CUSTOULTENT,0),(SELECT NVL(NUMCASASDECESTOQUE,1) FROM PCCONSUM)) AS CUSTOULTENT,
                             NVL(B.ESTOQUEPORLOTE,'N') AS ESTOQUEPORLOTE
                             FROM PCOPI A, PCPRODUT B , PCEST C
                             WHERE A.CODPROD = B.CODPROD
@@ -477,7 +540,7 @@ REVALIDAR:
 
                     qtdisponivelLote = Convert.ToDecimal(dtLotes.Rows(0)("QTNECESSIDADE")) - Convert.ToDecimal(dtLotes.Rows(0)("QTREQUISITADO"))
 
-                    If Convert.ToDecimal(dt.Rows(i)("QTNECESSIDADE")) < qtdisponivelLote Then
+                    If Convert.ToDecimal(dt.Rows(i)("QTNECESSIDADE")) <= qtdisponivelLote Then
 
                         NUMLOTE = dtLotes.Rows(0)("NUMLOTE").ToString()
                         qtrequisitar = Convert.ToDecimal(dt.Rows(i)("QTNECESSIDADE"))
@@ -496,6 +559,7 @@ REVALIDAR:
 
                 Else
                     qtrequisitar = Convert.ToDecimal(dt.Rows(i)("QTNECESSIDADE"))
+                    dt.Rows(i)("FALTAREQUISITAR") -= qtrequisitar
                     NUMLOTE = "1"
 
                 End If
@@ -505,11 +569,11 @@ REVALIDAR:
                 SQL_INSERT_PCMOV = "INSERT INTO PCMOV             
                 (DTMOV, CODPROD, CODOPER, QT, PUNIT, CUSTOREAL, CUSTOFIN, CUSTOCONT, VALORULTENT, 
                  CUSTOULTENT, CODFILIAL, STATUS, NUMLOTE, NUMOP, CODFUNCLANC, CODFUNCREQ, 
-                 NUMTRANSVENDA, CODUSUR, NUMTRANSITEM,NUMPED)
+                 NUMTRANSVENDA, CODUSUR, NUMTRANSITEM,NUMPED,NUMSEQ)
                 VALUES
                 (:DTMOV, :CODPROD, :CODOPER, :QT, :PUNIT, :CUSTOREAL, :CUSTOFIN, :CUSTOCONT, 
                  :VALORULTENT, :CUSTOULTENT, :CODFILIAL, :STATUS, :NUMLOTE, :NUMOP, :CODFUNCLANC,
-                 :CODFUNCREQ, :NUMTRANSVENDA, :CODUSUR, :NUMTRANSITEM,0)"
+                 :CODFUNCREQ, :NUMTRANSVENDA, :CODUSUR, :NUMTRANSITEM,:NUMPED,:NUMSEQ)"
 
                 Using cmd As New OracleCommand(SQL_INSERT_PCMOV, conexao)
 
@@ -536,6 +600,9 @@ REVALIDAR:
                     cmd.Parameters.Add(":NUMTRANSVENDA", OracleDbType.Int32).Value = numtransvenda
                     cmd.Parameters.Add(":CODUSUR", OracleDbType.Varchar2).Value = My.Settings.UsuarioWinthor
                     cmd.Parameters.Add(":NUMTRANSITEM", OracleDbType.Int32).Value = numtransitem
+                    cmd.Parameters.Add(":NUMPED", OracleDbType.Int32).Value = numop
+
+                    cmd.Parameters.Add(":NUMSEQ", OracleDbType.Int32).Value = NUMSEQ
 
                     cmd.ExecuteNonQuery()
                 End Using
@@ -622,7 +689,8 @@ REVALIDAR:
                     QT,
                     NUMLOTE,
                     CODFILIAL,
-                    NUMOP
+                    NUMOP,
+                    NUMTRANSVENDA
                     FROM PCMOV 
                     WHERE NUMTRANSVENDA = :NUMTRANSVENDA
                     "

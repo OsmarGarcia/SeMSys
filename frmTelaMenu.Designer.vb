@@ -39,6 +39,7 @@ Partial Class frmTelaMenu
         Me.ts173 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ts174 = New System.Windows.Forms.ToolStripMenuItem()
         Me.RelResumoDeOPsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RelOrdemDeProduçãoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ts2 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ts21 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ts22 = New System.Windows.Forms.ToolStripMenuItem()
@@ -156,7 +157,7 @@ Partial Class frmTelaMenu
         '
         'ts17
         '
-        Me.ts17.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ts171, Me.ts172, Me.ts173, Me.ts174, Me.RelResumoDeOPsToolStripMenuItem})
+        Me.ts17.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ts171, Me.ts172, Me.ts173, Me.ts174, Me.RelResumoDeOPsToolStripMenuItem, Me.RelOrdemDeProduçãoToolStripMenuItem})
         Me.ts17.Name = "ts17"
         Me.ts17.Size = New System.Drawing.Size(318, 26)
         Me.ts17.Tag = "admin,supervisor,user"
@@ -194,6 +195,12 @@ Partial Class frmTelaMenu
         Me.RelResumoDeOPsToolStripMenuItem.Name = "RelResumoDeOPsToolStripMenuItem"
         Me.RelResumoDeOPsToolStripMenuItem.Size = New System.Drawing.Size(351, 26)
         Me.RelResumoDeOPsToolStripMenuItem.Text = "Rel Resumo de OPs"
+        '
+        'RelOrdemDeProduçãoToolStripMenuItem
+        '
+        Me.RelOrdemDeProduçãoToolStripMenuItem.Name = "RelOrdemDeProduçãoToolStripMenuItem"
+        Me.RelOrdemDeProduçãoToolStripMenuItem.Size = New System.Drawing.Size(351, 26)
+        Me.RelOrdemDeProduçãoToolStripMenuItem.Text = "Rel Ordem de Produção"
         '
         'ts2
         '
@@ -301,7 +308,7 @@ Partial Class frmTelaMenu
         '
         Me.ts47.Name = "ts47"
         Me.ts47.Size = New System.Drawing.Size(365, 26)
-        Me.ts47.Tag = "admin"
+        Me.ts47.Tag = "admin,supervisor"
         Me.ts47.Text = "Manutenção da Ordem de Produção"
         Me.ts47.Visible = False
         '
@@ -387,4 +394,5 @@ Partial Class frmTelaMenu
     Friend WithEvents ConfiguraçõesToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents RelResumoDeOPsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents TROToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents RelOrdemDeProduçãoToolStripMenuItem As ToolStripMenuItem
 End Class

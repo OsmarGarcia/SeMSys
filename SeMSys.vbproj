@@ -8,8 +8,8 @@
     <MyType>WindowsForms</MyType>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>1.0.0.185</AssemblyVersion>
-    <FileVersion>1.0.0.185</FileVersion>
+    <AssemblyVersion>1.0.0.213</AssemblyVersion>
+    <FileVersion>1.0.0.213</FileVersion>
     <ApplicationIcon>fabrica-_1_.ico</ApplicationIcon>
     <Platforms>AnyCPU;ARM64</Platforms>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <None Remove="fabrica.ico" />
+    <None Remove="RelOrdemProducao.rdlc" />
     <None Remove="RelParadasOP.rdlc" />
     <None Remove="RelProducaoTotalWinthor.rdlc" />
     <None Remove="RelProgramaProducao.rdlc" />
@@ -99,6 +100,7 @@
     <EmbeddedResource Include="fabrica.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="RelOrdemProducao.rdlc" />
     <EmbeddedResource Include="RelProducaoTotalWinthor.rdlc" />
     <EmbeddedResource Include="RelProgramaProducao.rdlc">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

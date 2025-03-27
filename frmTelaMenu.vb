@@ -165,4 +165,10 @@ Public Class frmTelaMenu
         Dim frm As New frmTrocaNF
         frm.Show()
     End Sub
+
+    Private Sub RelOrdemDeProduçãoToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RelOrdemDeProduçãoToolStripMenuItem.Click
+
+        Dim frm As New frmOrdemProducao
+        frm.Show()
+    End Sub
 End Class
