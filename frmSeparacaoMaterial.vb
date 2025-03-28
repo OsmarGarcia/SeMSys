@@ -569,11 +569,11 @@ REVALIDAR:
                 SQL_INSERT_PCMOV = "INSERT INTO PCMOV             
                 (DTMOV, CODPROD, CODOPER, QT, PUNIT, CUSTOREAL, CUSTOFIN, CUSTOCONT, VALORULTENT, 
                  CUSTOULTENT, CODFILIAL, STATUS, NUMLOTE, NUMOP, CODFUNCLANC, CODFUNCREQ, 
-                 NUMTRANSVENDA, CODUSUR, NUMTRANSITEM,NUMPED,NUMSEQ)
+                 NUMTRANSVENDA, CODUSUR, NUMTRANSITEM,NUMPED,NUMSEQ,NUMCAR)
                 VALUES
                 (:DTMOV, :CODPROD, :CODOPER, :QT, :PUNIT, :CUSTOREAL, :CUSTOFIN, :CUSTOCONT, 
                  :VALORULTENT, :CUSTOULTENT, :CODFILIAL, :STATUS, :NUMLOTE, :NUMOP, :CODFUNCLANC,
-                 :CODFUNCREQ, :NUMTRANSVENDA, :CODUSUR, :NUMTRANSITEM,:NUMPED,:NUMSEQ)"
+                 :CODFUNCREQ, :NUMTRANSVENDA, :CODUSUR, :NUMTRANSITEM,:NUMPED,:NUMSEQ,:NUMCAR)"
 
                 Using cmd As New OracleCommand(SQL_INSERT_PCMOV, conexao)
 
@@ -601,7 +601,7 @@ REVALIDAR:
                     cmd.Parameters.Add(":CODUSUR", OracleDbType.Varchar2).Value = My.Settings.UsuarioWinthor
                     cmd.Parameters.Add(":NUMTRANSITEM", OracleDbType.Int32).Value = numtransitem
                     cmd.Parameters.Add(":NUMPED", OracleDbType.Int32).Value = numop
-
+                    cmd.Parameters.Add(":NUMCAR", OracleDbType.Int32).Value = numop
                     cmd.Parameters.Add(":NUMSEQ", OracleDbType.Int32).Value = NUMSEQ
 
                     cmd.ExecuteNonQuery()
@@ -622,6 +622,26 @@ REVALIDAR:
                     cmd.CommandType = CommandType.Text
                     cmd.ExecuteNonQuery()
 
+                End Using
+
+
+                ' Atualiza PCOPILOTE para requisitar o proximo lote da vez
+                SQL = "UPDATE PCOPILOTE                                              
+                    SET QTREQUISITADO = NVL (QTREQUISITADO, 0) + :QT   
+                   WHERE NUMOP = :NUMOP                                      
+                        AND NUMLOTE = :NUMLOTE                                  
+                        AND FRACAOUMIDA = 'A'                          
+                        AND CODPROD = :CODPROD                                  
+                        "
+
+                Using cmd As New OracleCommand(SQL, conexao)
+                    cmd.Transaction = Oratransaction
+                    cmd.CommandType = CommandType.Text
+                    cmd.Parameters.Add(":QT", OracleDbType.Decimal).Value = qtrequisitar
+                    cmd.Parameters.Add(":NUMOP", OracleDbType.Varchar2).Value = numop
+                    cmd.Parameters.Add(":NUMLOTE", OracleDbType.Varchar2).Value = NUMLOTE
+                    cmd.Parameters.Add(":CODPROD", OracleDbType.Varchar2).Value = dt.Rows(i)("CODPROD").ToString()
+                    cmd.ExecuteNonQuery()
                 End Using
 
 
@@ -665,7 +685,7 @@ REVALIDAR:
                 paramMsgRetorno.Direction = ParameterDirection.Output
                 cmd.Parameters.Add(paramMsgRetorno)
 
-                ' 🚀 Executar o comando corretamente
+                '  Executar o comando corretamente
                 cmd.ExecuteNonQuery()
 
                 ' Capturar valores de saída de forma segura
@@ -757,24 +777,8 @@ REVALIDAR:
                     cmd.ExecuteNonQuery()
                 End Using
 
-                ' 6. Atualiza PCOPILOTE
-                SQL = "UPDATE PCOPILOTE                                              
-                    SET QTREQUISITADO = NVL (QTREQUISITADO, 0) + :QT   
-                   WHERE NUMOP = :NUMOP                                      
-                        AND NUMLOTE = :NUMLOTE                                  
-                        AND FRACAOUMIDA = 'A'                          
-                        AND CODPROD = :CODPROD                                  
-                        "
 
-                Using cmd As New OracleCommand(SQL, conexao)
-                    cmd.Transaction = Oratransaction
-                    cmd.CommandType = CommandType.Text
-                    cmd.Parameters.Add(":QT", OracleDbType.Decimal).Value = Convert.ToDecimal(dt.Rows(i)("QT"))
-                    cmd.Parameters.Add(":NUMOP", OracleDbType.Varchar2).Value = dt.Rows(i)("NUMOP").ToString()
-                    cmd.Parameters.Add(":NUMLOTE", OracleDbType.Varchar2).Value = dt.Rows(i)("NUMLOTE").ToString()
-                    cmd.Parameters.Add(":CODPROD", OracleDbType.Varchar2).Value = dt.Rows(i)("CODPROD").ToString()
-                    cmd.ExecuteNonQuery()
-                End Using
+
 
 
 

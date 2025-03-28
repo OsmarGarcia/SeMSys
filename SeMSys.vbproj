@@ -8,8 +8,8 @@
     <MyType>WindowsForms</MyType>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>1.0.0.213</AssemblyVersion>
-    <FileVersion>1.0.0.213</FileVersion>
+    <AssemblyVersion>1.0.0.215</AssemblyVersion>
+    <FileVersion>1.0.0.215</FileVersion>
     <ApplicationIcon>fabrica-_1_.ico</ApplicationIcon>
     <Platforms>AnyCPU;ARM64</Platforms>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
